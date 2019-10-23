@@ -1,0 +1,29 @@
+node(){
+    stage("code Checkout"){
+        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanBeforeCheckout']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github_cred', url: 'https://github.com/Phanik21/gameoflife.git']]])
+    }
+    stage("code validate"){
+        sh 'mvn -f pom.xml validate'
+    }
+    stage("code compile"){
+        sh 'mvn -f pom.xml compile'
+    }
+    stage("code test"){
+        sh 'mvn -f pom.xml test'
+    }
+    stage("JUnit Testing"){
+        junit '**/target/surefire-reports/*.xml'
+    }
+    stage("Junit Test Results"){
+        junit testDataPublishers: [[$class: 'AttachmentPublisher']], testResults: '**/target/surefire-reports/*.xml'
+    }
+    stage("Code package"){
+        sh 'mvn -f pom.xml package'
+    }
+    stage("Code install"){
+        sh 'mvn -f pom.xml clean install'
+    }
+    stage("mailing"){
+        mail bcc: '', body: '', cc: '', from: '', replyTo: '', subject: 'Build Success', to: 'phaneendra.ch94@gmail.com'
+    }
+}
