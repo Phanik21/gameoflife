@@ -12,15 +12,12 @@ node(){
         junit '**/target/surefire-reports/*.xml'
     }
     stage("Junit Test Results"){
-        junit testDataPublishers: [[$class: 'AttachmentPublisher']], testResults: '**/target/surefire-reports/*.xml'
+        junit '**/target/surefire-reports/*.xml'
     }
     stage("Code package"){
         sh 'mvn -f pom.xml package'
     }
     stage("Code install"){
         sh 'mvn -f pom.xml clean install'
-    }
-    stage("mailing"){
-        mail bcc: '', body: '', cc: '', from: '', replyTo: '', subject: 'Build Success', to: 'phaneendra.ch94@gmail.com'
     }
 }
