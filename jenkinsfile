@@ -2,6 +2,9 @@ node(){
     stage("code Checkout"){
         checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanBeforeCheckout']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github_cred', url: 'https://github.com/Phanik21/gameoflife.git']]])
     }
+     stage("code validate"){
+        sh 'mvn -f pom.xml clean validate'
+    }
     stage("code compile"){
         sh 'mvn -f pom.xml compile'
     }
